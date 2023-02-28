@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\Orders;
+use App\Models\WorkShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -49,6 +51,54 @@ class OrdersController extends Controller
                     'create_at' => $orders->create_at,
                     'status' => $orders->status,
                     'price' => $orders->price
+                ]
+            ], 200
+        );
+    }
+
+    public function ShowOrder(Request $request, $id)
+    {
+        //
+
+        $order = Orders::find($id);
+
+        $menu = Menu::select('id', 'count', 'position', 'price')->get();
+
+        $priceAll = Menu::select('price')->sum('price');
+        return response()->json(
+            [
+                'data' => [
+                    'id' => $order->id,
+                    'table' => $order->table_id,
+                    'shift_workers' => $order->work_shift_id,
+                    'create_at' => $order->create_at,
+                    'status' => $order->status,
+                    'positions' => $menu,
+                    'price_all' => $priceAll
+                ]
+            ], 200
+        );
+    }
+
+    public function ShowOrderAll(Request $request, $id)
+    {
+        //
+        $shift = WorkShift::where('user_id', $id)->first();
+//        $order = Orders::where('work_shift_id', $id)->get(); говно вариант, переделеать
+
+        $menu = Menu::select('id', 'count', 'position', 'price')->get();
+        $priceAll = Menu::select('price')->sum('price');
+
+        return response()->json(
+            [
+                'data' => [
+                    'id' => $order->id,
+                    'table' => $order->table_id,
+                    'shift_workers' => $order->work_shift_id,
+                    'create_at' => $order->create_at,
+                    'status' => $order->status,
+                    'positions' => $menu,
+                    'price_all' => $priceAll
                 ]
             ], 200
         );

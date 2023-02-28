@@ -20,4 +20,6 @@ Route::group(['middleware' => ['ApiAuth', 'AuthAdmin']], function () {
 });
 
 Route::post('order', [OrdersController::class, 'createOrder']);
+Route::get('order/{id}', [OrdersController::class, 'ShowOrder']);
+Route::get('{id}/orders', [OrdersController::class, 'ShowOrderAll']);
 
