@@ -28,11 +28,18 @@ class User extends Authenticatable
         'user_token',
     ];
 
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     public $timestamps = false;
+
+    public function roles()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
 
 }

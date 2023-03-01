@@ -23,4 +23,9 @@ class Orders extends Model
     ];
 
     public $timestamps = false;
+
+    public function tables()
+    {
+        $this->belongsTo(Table::class, 'table_id', 'id');
+    }
 }

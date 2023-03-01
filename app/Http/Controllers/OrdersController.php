@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderListResource;
 use App\Models\Menu;
 use App\Models\Orders;
 use App\Models\WorkShift;
@@ -17,7 +18,7 @@ class OrdersController extends Controller
             'table_id' => $request->input('table_id'),
             'number_of_person' => $request->input('number_of_person'),
             'create_at' => NOW(),
-            'status' => 'Принят',
+            'status' => 0,
             'price' => 0
         ];
 
@@ -41,6 +42,9 @@ class OrdersController extends Controller
         }
 
         $orders = Orders::create($input);
+//        $orderList = Orders:;
+
+//        return OrderListResource::collection($orderList);
 
         return response()->json(
             [
@@ -67,15 +71,7 @@ class OrdersController extends Controller
         $priceAll = Menu::select('price')->sum('price');
         return response()->json(
             [
-                'data' => [
-                    'id' => $order->id,
-                    'table' => $order->table_id,
-                    'shift_workers' => $order->work_shift_id,
-                    'create_at' => $order->create_at,
-                    'status' => $order->status,
-                    'positions' => $menu,
-                    'price_all' => $priceAll
-                ]
+                'data' => $order
             ], 200
         );
     }
@@ -84,7 +80,7 @@ class OrdersController extends Controller
     {
         //
         $shift = WorkShift::where('user_id', $id)->first();
-//        $order = Orders::where('work_shift_id', $id)->get(); говно вариант, переделеать
+        $order = Orders::where('work_shift_id', $id)->get();
 
         $menu = Menu::select('id', 'count', 'position', 'price')->get();
         $priceAll = Menu::select('price')->sum('price');

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserListResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -49,14 +51,17 @@ class AuthController extends Controller
             ->where('password', $request->password)
             ->first();
 
-        if (!$user) return response()->json(
-            [
-                'error' => [
-                    'code' => 401,
-                    'message' => 'Authentication failed'
-                ]
-            ], 401
-        );
+        if (!$user) {
+            return response()->json(
+                [
+                    'error' => [
+                        'code' => 401,
+                        'message' => 'Authentication failed'
+                    ]
+                ],
+                401
+            );
+        }
 
         return response()->json(
             [
@@ -71,23 +76,13 @@ class AuthController extends Controller
     {
         $user = User::select('id', 'name', 'login', 'status', 'role_id')->get();
 
-        foreach ($user as $staff) {
-            if ($staff['role_id'] == 1) $staff['role_id'] = 'Администратор';
-            if ($staff['role_id'] == 2) $staff['role_id'] = 'Официант';
-            if ($staff['role_id'] == 3) $staff['role_id'] = 'Повар';
-
-            return response()->json(
-                [
-                    'data' => $user
-                ], 200
-            );
-        }
+        return UserListResource::collection($user);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -98,7 +93,7 @@ class AuthController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -109,8 +104,8 @@ class AuthController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -121,7 +116,7 @@ class AuthController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
