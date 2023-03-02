@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ChiefOrderResource;
-use App\Http\Resources\CreateOrderResource;
 use App\Http\Resources\OrderListResource;
 use App\Models\Menu;
 use App\Models\Orders;
-use App\Models\User;
 use App\Models\WorkShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -102,7 +100,7 @@ class OrdersController extends Controller
     public function editOrderStatus(Request $request, $id)
     {
         $order = Orders::where('id', $id)->first();
-        
+
 
         // Todo: дома додумать, как сделать нормальное обновление, в голову лезут костыли, so sorry
     }
