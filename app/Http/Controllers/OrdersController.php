@@ -95,13 +95,37 @@ class OrdersController extends Controller
         $order = Orders::find($id);
 
 
-
         return OrderListResource::collection($getOrder, $order);
     }
 
-    public function editOrderStatus (Request $request, $id)
+    public function editOrderStatus(Request $request, $id)
     {
         $order = Orders::where('id', $id)->first();
         // Todo: дома додумать, как сделать нормальное обновление, в голове лезут костыли, so sorry
+    }
+
+
+    public function getChiefOrder(Request $request)
+    {
+        $orders = Orders::select('id', 'table_id', 'work_shift_id', 'create_at', 'status', 'price')
+//            ->where('status', 1)
+            ->where('status', 2)
+            ->first();
+
+        // Todo: продумать вывод, скорее всего придется через коллекцию выводить, но я не уверен
+
+        return response()->json(
+            [
+                'data' => [
+                    'id' => $orders->id,
+                    'table' => $orders->table->name,
+                    'shift_workers' => WorkShift::getUserName($orders->work_shift_id),
+                    'create_at' => $orders->create_at,
+                    'status' => $orders->statused->name,
+                    'price' => $orders->price
+                ]
+            ],
+            200
+        );
     }
 }
