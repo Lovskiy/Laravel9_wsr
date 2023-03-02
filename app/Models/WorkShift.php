@@ -20,4 +20,18 @@ class WorkShift extends Model
     ];
 
     public $timestamps = false;
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'user_id', 'id');
+    }
+
+    public static function getUserName($id)
+    {
+        $WorkShiftData = WorkShift::find($id);
+        $id_user = $WorkShiftData->user_id;
+        $data = User::where('id', $id_user)->first();
+
+        return $data->name;
+    }
 }

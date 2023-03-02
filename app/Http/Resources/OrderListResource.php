@@ -11,21 +11,23 @@ class OrderListResource extends JsonResource
 {
     public function toArray($request)
     {
-        $orders = Orders::select('id', 'table_id', 'work_shift_id', 'create_at', 'status', 'price')->get();
+        $getShift = WorkShift::select('id', 'start', 'end', 'active')->first();
+        $priceAll = Menu::select('price')->sum('price');
 
         return [
-            'id' => $this->id,
-            'start' => $this->start,
-            'end' => $this->end,
-            'active' => $this->active,
+            'id' => $getShift->id,
+            'start' => $getShift->start,
+            'end' => $getShift->end,
+            'active' => $getShift->active,
             'orders' => [
-                'id' => $orders->id,
-                'table' => $orders->tables->name,
-                'shift_workers' => $orders->work_shift_id,
-                'create_at' => $orders->create_at,
-                'status' => $orders->status,
-                'price' => $orders->price
-            ]
-         ];
+                'id' => $this->id,
+                'table' => $this->table->name,
+                'shift_workers' => WorkShift::getUserName($this->work_shift_id),
+                'create_at' => $this->create_at,
+                'status' => $this->statused->name,
+                'price' => $this->price
+            ],
+            'amount_for_all' => $priceAll,
+        ];
     }
 }

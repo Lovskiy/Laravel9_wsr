@@ -41,5 +41,10 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
+    public function workShift()
+    {
+        return $this->belongsTo(WorkShift::class, 'user_id' , 'id');
+    }
+
 
 }

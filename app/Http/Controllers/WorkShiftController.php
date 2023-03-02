@@ -13,7 +13,7 @@ class WorkShiftController extends Controller
     {
         $user = User::where('user_token', $request->bearerToken())->first();
         $input = [
-//            'user_id' => $user->id,
+//            'user_id' => $request->input('id'),
             'start' => $request->input('start'),
             'end' => $request->input('end')
         ];
@@ -125,6 +125,15 @@ class WorkShiftController extends Controller
         $validator = Validator::make($input, [
             'user_id' => 'required'
         ]);
+
+        if (!$workShift) return response()->json(
+            [
+                'error' => [
+                    'code' => 403,
+                    'message' => 'Такой смены нет'
+                ]
+            ], 403
+        );
 
         if ($validator->fails()) {
             return response()->json(

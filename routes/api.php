@@ -19,7 +19,11 @@ Route::group(['middleware' => ['ApiAuth', 'AuthAdmin']], function () {
 
 });
 
-Route::post('order', [OrdersController::class, 'createOrder']);
-Route::get('order/{id}', [OrdersController::class, 'ShowOrder']);
-Route::get('{id}/orders', [OrdersController::class, 'ShowOrderAll']);
+Route::group(['middleware' => ['ApiAuth', 'AuthShift']], function () {
+    Route::post('order', [OrdersController::class, 'createOrder']);
+    Route::get('order/{id}', [OrdersController::class, 'ShowOrder']);
+    Route::get('work-shift/{id}/orders', [OrdersController::class, 'ShowOrderAll']);
+    Route::patch('order/{id}/change-status', [OrdersController::class, 'editOrderStatus']);
+});
+
 

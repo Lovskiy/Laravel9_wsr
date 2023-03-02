@@ -2,20 +2,19 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserListResource extends JsonResource
+class CreateOrderResource extends JsonResource
 {
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'login' => $this->login,
+            'table' => $this->table->name,
+            'shift_workers' => $this->work_shift_id,
+            'create_at' => $this->create_at,
             'status' => $this->status,
-            'group' => $this->roles->name
+            'price' => $this->price
         ];
     }
 }
